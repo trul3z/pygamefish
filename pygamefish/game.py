@@ -2,14 +2,13 @@ import pygame
 import sys
 import os
 
-# Import from start_screen
+# Import from start_screen - add maximized to the imports
 from start_screen import (
     current_width, current_height, screen, clock, FPS, WHITE, BLACK, BLUE, 
     RED, GREEN, LIGHT_GREEN, LIGHT_BLUE, GRAY, text_font, button_font, scale_fonts,
     toggle_maximized, Button, maximized, MAX_WIDTH, MAX_HEIGHT, DEFAULT_WIDTH, DEFAULT_HEIGHT
 )
 
-# Import Player class from player module
 from player import Player
 
 class PauseMenu:
@@ -106,6 +105,23 @@ def run_game(player_name):
     # Make variables global 
     global screen, current_width, current_height, maximized
     
+    # Create the player
+    player = Player(player_name, current_width, current_height)
+    
+    # Store original player position relative to screen
+    player_rel_x = 0.5  # Center horizontally (50%)
+    player_rel_y = 0.5  # Center vertically (50%)
+    
+    # Create a dark blue background (deeper than the menu)
+    background_color = (10, 30, 70)
+    
+    # FULLSCREEN IMPLEMENTATION
+    fullscreen = False  # Track true fullscreen state
+    
+    # Store previous window dimensions for returning from fullscreen
+    prev_width = current_width
+    prev_height = current_height
+    
     # Set initial window size based on maximized state
     if maximized:
         current_width = MAX_WIDTH
@@ -117,9 +133,6 @@ def run_game(player_name):
     # Recreate the screen with the right dimensions
     screen = pygame.display.set_mode((current_width, current_height), pygame.RESIZABLE)
     pygame.display.set_caption("fishgame.")
-    
-    # Create the player - pass screen dimensions
-    player = Player(player_name, current_width, current_height)
     
     # Pause menu
     pause_menu = PauseMenu()
@@ -220,7 +233,7 @@ def run_game(player_name):
         # SECOND: Get input and update player when not paused
         if not paused:
             player.update(current_keys, current_width, current_height)  # Use current_keys instead of getting them again
-        
+
         # THIRD: Draw the player
         player.draw(screen, text_font, BLUE, BLACK, WHITE)
         
